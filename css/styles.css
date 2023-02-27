@@ -77,7 +77,7 @@ html {
   width: 193.14px;
 }
 
-.button {
+.button-grid {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -88,12 +88,12 @@ html {
   border: 0.933036px solid #001e34;
   transition: 0.3s;
 }
-.button:hover {
+.button-grid:hover {
   background-color: rgb(27, 116, 175);
 }
-.button:active {
-    background-color: #002b4a;
-    transition: none;
+.button-grid:active {
+  background-color: #002b4a;
+  transition: none;
 }
 
 .right_edge-buttons {
@@ -104,6 +104,9 @@ html {
   padding-bottom: 4px;
 }
 
+.button-grid > span {
+  display: none;
+}
 /* divide style start */
 .divide {
   display: flex;
@@ -125,10 +128,6 @@ html {
 }
 /* divide style end */
 /* multuply stle start */
-.multiply {
-  position: relative;
-}
-
 .multiply-line_one {
   position: absolute;
   transform: rotate(-45deg);
@@ -138,19 +137,12 @@ html {
   transform: rotate(45deg);
 }
 /* multiply style end */
-/* clear one number start */
-.clear-one-number {
-}
-/* clear one number end */
 /* minus style start */
 .minus-line {
   margin-right: 3.5px;
 }
 /* minus style end */
 /* plus style start */
-.plus {
-  position: relative;
-}
 .plus-line_rotate-90 {
   position: absolute;
   transform: rotate(90deg);
