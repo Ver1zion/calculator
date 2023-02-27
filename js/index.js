@@ -1,5 +1,5 @@
 "use strict";
-
+const buttons = document.querySelector(".buttons");
 const buttonsNum = document.querySelectorAll(".button-num");
 const buttonsOperation = document.querySelectorAll(".button-operation");
 const clearAll = document.querySelector(".clear-all");
@@ -9,87 +9,69 @@ const equals = document.querySelector(".equals");
 const minus = document.querySelector(".minus");
 const plus = document.querySelector(".plus");
 const actualAction = document.querySelector(".actual-action");
-let firstNum;
+const decimalPlaces = (x) =>
+  x.toString().includes(".") ? x.toString().split(".").pop().length : 0;
+
+let firstNum = "0";
 let secondNum;
 let subtraction;
 let summing;
 
 setInterval(() => {
   if (!!actualAction.textContent) {
-    console.log(Boolean(actualAction.textContent));
-    secondNum = parseInt(actualAction.innerText);
+    // console.log(Boolean(actualAction.textContent));
+    secondNum = parseFloat(actualAction.innerText);
   }
 }, 0);
-function updateDisplay(button) {
-  button.forEach((buttn) => {
-    buttn.addEventListener("click", (targ) => {
-      if (actualAction.textContent === "0") {
-        actualAction.textContent = "";
-        actualAction.textContent += buttn.textContent;
-      } else {
-        actualAction.textContent += buttn.textContent;
+
+function updateDisplay(parent) {
+  parent.addEventListener("click", (event) => {
+    if (actualAction.textContent === "0") {
+      actualAction.textContent = "";
+      actualAction.textContent += event.target.textContent;
+    } else {
+      actualAction.textContent += event.target.textContent;
+    }
+    if (event.target.closest(".minus")) {
+      firstNum = parseFloat(actualAction.innerText);
+      actualAction.textContent = "";
+      equals.addEventListener("click", () => {
+        subtraction = firstNum - secondNum;
+        actualAction.innerText = subtraction;
+      });
+    } else if (event.target.closest(".plus")) {
+      firstNum = parseFloat(actualAction.innerText);
+      actualAction.textContent = "";
+      equals.addEventListener("click", () => {
+        subtraction = firstNum + secondNum;
+        actualAction.innerText = subtraction;
+      });
+    } else if (event.target.closest(".multiply")) {
+      firstNum = parseFloat(actualAction.innerText);
+      actualAction.textContent = "";
+      equals.addEventListener("click", () => {
+        subtraction = firstNum * secondNum;
+        actualAction.innerText =
+          decimalPlaces(subtraction) > 0 ? subtraction.toFixed(2) : subtraction;
+      });
+    } else if (event.target.closest(".divide")) {
+      firstNum = parseFloat(actualAction.innerText);
+      actualAction.textContent = "";
+      equals.addEventListener("click", () => {
+        subtraction = firstNum / secondNum;
+        actualAction.innerText =
+          decimalPlaces(subtraction) > 0 ? subtraction.toFixed(2) : subtraction;
+      });
+    } else if (event.target.closest(".clear-all")) {
+      firstNum = "0";
+      actualAction.innerText = "0";
+    } else if (event.target.closest(".clear")) {
+      actualAction.innerText = actualAction.innerText.slice(0, -1);
+      if (actualAction.textContent.length <= "0") {
+        actualAction.innerText = "0";
       }
-      if (targ.currentTarget.textContent.includes("-")) {
-        firstNum = parseInt(actualAction.innerText);
-        actualAction.textContent = "";
-      }
-      if (targ.target.textContent.includes("+")) {
-        firstNum = parseInt(actualAction.innerText);
-        actualAction.textContent = "";
-      }
-    });
+    }
   });
 }
 
-function getTotalValue() {
-  if (!!equals) {
-    equals.addEventListener("click", () => {
-      subtraction = firstNum - secondNum;
-      actualAction.innerText = subtraction;
-      console.log((subtraction = firstNum - secondNum));
-    });
-  }
-}
-
-updateDisplay(buttonsNum);
-updateDisplay(buttonsOperation);
-getTotalValue(equals);
-
-// var display = document.getElementById("display");
-// var values = display.innerText.split(" "); // split by space
-// var num1 = parseFloat(values[0]); // convert first value to number
-// var num2 = parseFloat(values[1]); // convert second value to number
-// var sum = num1 + num2; // add two numbers
-// console.log(sum); // display the sum
-
-// else if (actualAction.textContent === "-") {
-//   actualAction.textContent = "";
-// }
-// прошлое:
-// function updateDisplay(button) {
-//   button.forEach((buttn) => {
-//     buttn.addEventListener("click", (targ) => {
-//       if (actualAction.textContent === "0") {
-//         actualAction.textContent = "";
-//         actualAction.textContent += buttn.textContent;
-//       } else {
-//         actualAction.textContent += buttn.textContent;
-//       }
-
-//       if (targ.target.textContent.includes("-")) {
-//         firstNum = parseInt(actualAction.innerText);
-//         actualAction.textContent = "";
-//         if (targ.target.closest(".equals")) {
-//           summingNums = firstNum - summingNums;
-//         }
-//       }
-//     });
-//   });
-// }
-
-// function displayToArray(display) {
-//   display.textContent.split();
-// }
-
-// updateDisplay(buttonsNum);
-// updateDisplay(buttonsOperation)
+updateDisplay(buttons);
