@@ -24,8 +24,8 @@ setInterval(() => {
   }
 }, 0);
 
-function updateDisplay(parent) {
-  parent.addEventListener("click", (event) => {
+function updateDisplay(parentBlock) {
+  parentBlock.addEventListener("click", (event) => {
     if (actualAction.textContent === "0") {
       actualAction.textContent = "";
       actualAction.textContent += event.target.textContent;
@@ -62,6 +62,13 @@ function updateDisplay(parent) {
         actualAction.innerText =
           decimalPlaces(subtraction) > 0 ? subtraction.toFixed(2) : subtraction;
       });
+    } else if (event.target.closest(".percentage")) {
+      firstNum = parseFloat(actualAction.innerText);
+      actualAction.textContent = "";
+      equals.addEventListener("click", () => {
+        subtraction = (firstNum * secondNum) / 100;
+        actualAction.innerText = subtraction;
+      });
     } else if (event.target.closest(".clear-all")) {
       firstNum = "0";
       actualAction.innerText = "0";
@@ -71,6 +78,7 @@ function updateDisplay(parent) {
         actualAction.innerText = "0";
       }
     }
+    event.stopPropagation();
   });
 }
 
