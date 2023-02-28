@@ -1,85 +1,107 @@
 "use strict";
-const buttons = document.querySelector(".buttons");
-const buttonsNum = document.querySelectorAll(".button-num");
-const buttonsOperation = document.querySelectorAll(".button-operation");
-const clearAll = document.querySelector(".clear-all");
-const clearOneNum = document.querySelector(".clear");
-const buttonDot = document.querySelector(".button-dot");
-const equals = document.querySelector(".equals");
-const minus = document.querySelector(".minus");
-const plus = document.querySelector(".plus");
-const actualAction = document.querySelector(".actual-action");
-const decimalPlaces = (x) =>
-  x.toString().includes(".") ? x.toString().split(".").pop().length : 0;
 
-let firstNum = "0";
-let secondNum;
-let subtraction;
-let summing;
-
-setInterval(() => {
-  if (!!actualAction.textContent) {
-    // console.log(Boolean(actualAction.textContent));
-    secondNum = parseFloat(actualAction.innerText);
+class Calculator {
+  constructor(previousOperandText, actualOperandText) {
+    this.previousOperandText = previousOperandText;
+    this.actualOperandText = actualOperandText;
+    this.clear();
   }
-}, 0);
 
-function updateDisplay(parentBlock) {
-  parentBlock.addEventListener("click", (event) => {
-    if (actualAction.textContent === "0") {
-      actualAction.textContent = "";
-      actualAction.textContent += event.target.textContent;
-    } else {
-      actualAction.textContent += event.target.textContent;
+  clear() {
+    this.actualOperand = "";
+    this.previousOperand = "";
+    this.operation = undefined;
+  }
+
+  delete() {
+    this.actualOperand = this.actualOperand.slice(0, -1);
+  }
+
+  addNumber(number) {
+    if (number === "." && this.actualOperand.includes(".")) return;
+    this.actualOperand += number;
+  }
+
+  chooseOperation(operation) {
+    if (this.actualOperand === "") return;
+    if (this.actualOperand !== "") {
+      this.calculate();
     }
-    if (event.target.closest(".minus")) {
-      firstNum = parseFloat(actualAction.innerText);
-      actualAction.textContent = "";
-      equals.addEventListener("click", () => {
-        subtraction = firstNum - secondNum;
-        actualAction.innerText = subtraction;
-      });
-    } else if (event.target.closest(".plus")) {
-      firstNum = parseFloat(actualAction.innerText);
-      actualAction.textContent = "";
-      equals.addEventListener("click", () => {
-        subtraction = firstNum + secondNum;
-        actualAction.innerText = subtraction;
-      });
-    } else if (event.target.closest(".multiply")) {
-      firstNum = parseFloat(actualAction.innerText);
-      actualAction.textContent = "";
-      equals.addEventListener("click", () => {
-        subtraction = firstNum * secondNum;
-        actualAction.innerText =
-          decimalPlaces(subtraction) > 0 ? subtraction.toFixed(2) : subtraction;
-      });
-    } else if (event.target.closest(".divide")) {
-      firstNum = parseFloat(actualAction.innerText);
-      actualAction.textContent = "";
-      equals.addEventListener("click", () => {
-        subtraction = firstNum / secondNum;
-        actualAction.innerText =
-          decimalPlaces(subtraction) > 0 ? subtraction.toFixed(2) : subtraction;
-      });
-    } else if (event.target.closest(".percentage")) {
-      firstNum = parseFloat(actualAction.innerText);
-      actualAction.textContent = "";
-      equals.addEventListener("click", () => {
-        subtraction = (firstNum * secondNum) / 100;
-        actualAction.innerText = subtraction;
-      });
-    } else if (event.target.closest(".clear-all")) {
-      firstNum = "0";
-      actualAction.innerText = "0";
-    } else if (event.target.closest(".clear")) {
-      actualAction.innerText = actualAction.innerText.slice(0, -1);
-      if (actualAction.textContent.length <= "0") {
-        actualAction.innerText = "0";
-      }
+    this.operation = operation;
+    this.previousOperand = this.actualOperand;
+    this.actualOperand = "";
+  }
+
+  calculate() {
+    let calculation;
+    const prev = parseFloat(this.previousOperand);
+    const actual = parseFloat(this.actualOperand);
+
+    switch (this.operation) {
+      case "+":
+        calculation = prev + actual;
+        break;
+      case "-":
+        calculation = prev - actual;
+        break;
+      case "*":
+        calculation = prev * actual;
+        break;
+      case "/":
+        calculation = prev / actual;
+        break;
+      case "%":
+        calculation = (prev * actual) / 100;
+        break;
+      default:
+        return;
     }
-    event.stopPropagation();
-  });
+    this.actualOperand = calculation;
+    this.operation = undefined;
+    this.previousOperand = "";
+  }
+
+  updateDisplay() {
+    this.actualOperandText.innerText = this.actualOperand;
+    this.previousOperandText.innerText = this.previousOperand;
+  }
 }
 
-updateDisplay(buttons);
+const numberButtons = document.querySelectorAll(".button-num");
+const operationButtons = document.querySelectorAll(".button-operation");
+const equalsButton = document.querySelector(".equals");
+const deleteButton = document.querySelector(".clear");
+const clearAllButton = document.querySelector(".clear-all");
+const previousOperandText = document.querySelector(".previous-action");
+const actualOperandText = document.querySelector(".actual-action");
+
+const calculator = new Calculator(previousOperandText, actualOperandText);
+
+numberButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    calculator.addNumber(button.innerText);
+    calculator.updateDisplay();
+  });
+});
+
+operationButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    calculator.chooseOperation(button.innerText);
+    calculator.updateDisplay();
+  });
+});
+
+equalsButton.addEventListener("click", () => {
+  calculator.calculate();
+  calculator.updateDisplay();
+});
+
+clearAllButton.addEventListener("click", () => {
+  calculator.clear();
+  calculator.updateDisplay();
+});
+
+deleteButton.addEventListener("click", () => {
+  calculator.delete();
+  calculator.updateDisplay();
+});

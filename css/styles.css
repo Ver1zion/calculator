@@ -64,7 +64,7 @@ html {
   margin: 0 17px 10px 0;
   font-size: 32.6562px;
   line-height: 43px;
-  max-height: 43.39px;
+  height: 43.39px;
 }
 /* display style end */
 .buttons {
@@ -105,7 +105,9 @@ html {
 }
 
 .button-grid > span {
-  display: none;
+  display: block;
+  position: absolute;
+  opacity: 0;
 }
 /* divide style start */
 .divide {
