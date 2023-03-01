@@ -32,31 +32,52 @@ class Calculator {
     this.actualOperand = "";
   }
 
+  decimalPlaces(calculationNumbers) {
+    return calculationNumbers.toString().includes(".")
+      ? calculationNumbers.toString().split(".").pop().length
+      : 0;
+  }
+
   calculate() {
-    let calculation;
+    this.calculation;
     const prev = parseFloat(this.previousOperand);
     const actual = parseFloat(this.actualOperand);
 
     switch (this.operation) {
       case "+":
-        calculation = prev + actual;
+        this.calculation =
+          this.decimalPlaces(prev + actual) <= 0
+            ? prev + actual
+            : (prev + actual).toFixed(3);
         break;
       case "-":
-        calculation = prev - actual;
+        this.calculation =
+          this.decimalPlaces(prev - actual) <= 0
+            ? prev - actual
+            : (prev - actual).toFixed(3);
         break;
       case "*":
-        calculation = prev * actual;
+        this.calculation =
+          this.decimalPlaces(prev * actual) <= 3
+            ? prev * actual
+            : (prev * actual).toFixed(3);
         break;
       case "/":
-        calculation = prev / actual;
+        this.calculation =
+          this.decimalPlaces(prev / actual) <= 3
+            ? prev / actual
+            : (prev / actual).toFixed(3);
         break;
       case "%":
-        calculation = (prev * actual) / 100;
+        this.calculation =
+          this.decimalPlaces((prev * actual) / 100) <= 3
+            ? (prev * actual) / 100
+            : ((prev * actual) / 100).toFixed(3);
         break;
       default:
         return;
     }
-    this.actualOperand = calculation;
+    this.actualOperand = this.calculation;
     this.operation = undefined;
     this.previousOperand = "";
   }
